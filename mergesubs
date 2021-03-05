@@ -82,21 +82,31 @@ while [[ $# -gt 0 ]]; do
 done
 set -- "${POSITIONAL[@]}"
 
+if [[ ! -f "${1}.mp4" ]]; then
+   failure "video file not found"
+   exit 1
+fi
+
+if [[ ! -f "${1}.srt" ]]; then
+  failure "subtitle file not found"
+  exit 1
+fi
+
 echo
 echo 'MERGING'
 
 ffmpeg \
-  -i "${i}.mp4" \
-  -i "${i}.srt" \
+  -i "${1}.mp4" \
+  -i "${1}.srt" \
   -map 0 \
   -map 1 \
   -c copy \
   -metadata:s:s:0 language=eng \
-  "${i}.mkv"
+  "${1}.mkv"
 
 echo
 echo "RESULT"
-echo "  ${i}.mkv"
+echo "  ${1}.mkv"
 
 echo
 echo 'Done.'
